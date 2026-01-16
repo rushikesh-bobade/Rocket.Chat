@@ -5,6 +5,7 @@ export {
 	WorkspaceSyncPayload,
 	WorkspaceSyncRequestPayload,
 	WorkspaceSyncResponse,
+	WorkspaceSyncResponseSchema,
 	WorkspaceCommsRequestPayload,
 	WorkspaceCommsResponsePayload,
 	WorkspaceInteractionResponsePayload,
