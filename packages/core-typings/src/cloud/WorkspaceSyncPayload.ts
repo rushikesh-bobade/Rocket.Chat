@@ -3,33 +3,38 @@
 import type * as UiKit from '@rocket.chat/ui-kit';
 import * as z from 'zod';
 
-import type { IBanner } from '../IBanner';
-import type { Announcement } from './Announcement';
-import type { NpsSurveyAnnouncement } from './NpsSurveyAnnouncement';
+import { IBannerSchema } from '../IBanner';
+import { AnnouncementSchema } from './Announcement';
+import { NpsSurveyAnnouncementSchema } from './NpsSurveyAnnouncement';
+import { TimestampSchema } from '../utils';
 
-export interface WorkspaceSyncPayload {
-	workspaceId: string;
-	publicKey?: string;
-	trial?: {
-		trialing: boolean;
-		trialID: string;
-		endDate: Date;
-		marketing: {
-			utmContent: string;
-			utmMedium: string;
-			utmSource: string;
-			utmCampaign: string;
-		};
-		DowngradesToPlan: {
-			id: string;
-		};
-		trialRequested: boolean;
-	};
+export const WorkspaceSyncPayloadSchema = z.object({
+	workspaceId: z.string(),
+	publicKey: z.string().optional(),
+	trial: z
+		.object({
+			trialing: z.boolean(),
+			trialID: z.string(),
+			endDate: TimestampSchema,
+			marketing: z.object({
+				utmContent: z.string(),
+				utmMedium: z.string(),
+				utmSource: z.string(),
+				utmCampaign: z.string(),
+			}),
+			DowngradesToPlan: z.object({
+				id: z.string(),
+			}),
+			trialRequested: z.boolean(),
+		})
+		.optional(),
 	/** @deprecated */
-	nps?: NpsSurveyAnnouncement;
+	nps: NpsSurveyAnnouncementSchema.optional().meta({ deprecated: true }),
 	/** @deprecated */
-	banners?: IBanner[];
-}
+	banners: z.array(IBannerSchema).optional().meta({ deprecated: true }),
+});
+
+export type WorkspaceSyncPayload = z.infer<typeof WorkspaceSyncPayloadSchema>;
 
 export interface WorkspaceSyncRequestPayload {
 	uniqueId: string;
@@ -62,13 +67,17 @@ export interface WorkspaceCommsRequestPayload {
 	version: string;
 }
 
-export interface WorkspaceCommsResponsePayload {
-	nps?: NpsSurveyAnnouncement | null; // Potentially consolidate into announcements
-	announcements?: {
-		create: Announcement[];
-		delete: Announcement['_id'][];
-	};
-}
+export const WorkspaceCommsResponsePayloadSchema = z.object({
+	workspaceId: z.string().optional(),
+	publicKey: z.string().optional(),
+	nps: NpsSurveyAnnouncementSchema.nullish(),
+	announcements: z.object({
+		create: z.array(AnnouncementSchema),
+		delete: z.array(AnnouncementSchema.shape._id).optional(),
+	}),
+});
+
+export type WorkspaceCommsResponsePayload = z.infer<typeof WorkspaceCommsResponsePayloadSchema>;
 
 export interface WorkspaceInteractionResponsePayload {
 	serverInteraction: UiKit.ServerInteraction;
