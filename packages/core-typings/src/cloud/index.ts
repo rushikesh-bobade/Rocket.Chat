@@ -1,6 +1,6 @@
 export { Announcement } from './Announcement';
 export { NpsSurveyAnnouncement } from './NpsSurveyAnnouncement';
-export { WorkspaceLicensePayload } from './WorkspaceLicensePayload';
+export { WorkspaceLicensePayload, WorkspaceLicensePayloadSchema } from './WorkspaceLicensePayload';
 export {
 	WorkspaceSyncPayload,
 	WorkspaceSyncRequestPayload,
