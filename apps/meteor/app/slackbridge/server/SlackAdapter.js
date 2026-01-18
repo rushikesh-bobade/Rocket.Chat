@@ -4,7 +4,7 @@ import url from 'url';
 
 import { Message } from '@rocket.chat/core-services';
 import { Messages, Rooms, Users, ReadReceipts } from '@rocket.chat/models';
-import { App as SlackApp } from '@slack/bolt';
+import slackBolt from '@slack/bolt';
 import { RTMClient } from '@slack/rtm-api';
 import { Meteor } from 'meteor/meteor';
 
@@ -22,6 +22,8 @@ import { updateMessage } from '../../lib/server/functions/updateMessage';
 import { executeSetReaction } from '../../reactions/server/setReaction';
 import { settings } from '../../settings/server';
 import { getUserAvatarURL } from '../../utils/server/getUserAvatarURL';
+
+const { App: SlackApp } = slackBolt;
 
 export default class SlackAdapter {
 	constructor(slackBridge) {
